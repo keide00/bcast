@@ -71,10 +71,6 @@ cb_vec subcription_publisher_manager::get_map(std::string event_name)
     }
     else
     {
-        std::cerr << "Can't find event id " << event_name << std::endl;
-        it = _sub_pub_map.begin();
-        for (int i=0; _sub_pub_map.end() != it; ++it, ++i)
-            std::cerr << "key " << i << " = " << (it)->first << std::endl;
         return cb_vec();
     }
 }
