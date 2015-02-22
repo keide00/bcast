@@ -1,6 +1,3 @@
-
-#include <iostream>
-#include <string>
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public
 // License as published by the Free Software Foundation; either
@@ -13,6 +10,8 @@
 // Original Author: Kyle Eide, Kyle.E.Eide@gmail.com
 
 // comile with: g++ -std=c++11 simple_program_using_bcast.cpp -o simple -L./ -I./ -lbcast
+#include <iostream>
+#include <string>
 
 #include "bcast.hpp"
 
