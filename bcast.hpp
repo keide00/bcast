@@ -131,7 +131,7 @@ subcription_publisher_manager* get_sub_pub_man()  // convenience accessor
 { subcription_publisher_manager::get_sub_pub_man(); }
 
 
-_LIB_EXPORT_ template<typename derived>
+_LIB_EXPORT_ template <typename derived>
 class event     // base class for unique events
 {
 public:
@@ -147,7 +147,17 @@ public:
         for ( ; derived_cb_vec.end() != cb_iter; ++cb_iter)
             ((callback<derived>*)(*cb_iter))->_cb((const derived&) *this); // pull the trigger
     }
-
+/*
+    template <typename object>
+    static key add(object* Obj, void (object::*callback)(const derived& ev) )
+    {
+        std::string name( typeid(derived).name() );
+        std::stringstream ss;
+        ss << listener_pointer;  
+        std::string listener_id = ss.str();
+        return get_sub_pub_man()->add( boost::bind( callback, Obj, _1), name, listener_id);
+    }
+*/
     static key add(const void* listener_pointer, boost::function<void(const derived&)> cb_)
     {
         std::string name( typeid(derived).name() );
