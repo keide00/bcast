@@ -24,8 +24,7 @@ public:
     subscriber1(std::string name_)
     : _name(name_)
     {
-        _accounts.add_account(            simple_data_event::add( (const void*)this, 
-            boost::bind( &subscriber1::on_simple_data_event, this, _1) ) );
+        _accounts.add_account( simple_data_event::add(this, &subscriber1::on_simple_data_event) );
     }
 
     void on_simple_data_event(const simple_data_event& ev)
