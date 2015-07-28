@@ -128,11 +128,11 @@ private:
 subcription_publisher_manager* subcription_publisher_manager::_singleton = 0;
 
 subcription_publisher_manager* get_sub_pub_man()  // convenience accessor
-{ subcription_publisher_manager::get_sub_pub_man(); }
+{ return subcription_publisher_manager::get_sub_pub_man(); }
 
 
-_LIB_EXPORT_ template <typename derived>
-class event     // base class for unique events
+template <typename derived>
+class _LIB_EXPORT_ bevent     // base class for unique events
 {
 public:
 
@@ -147,17 +147,18 @@ public:
         for ( ; derived_cb_vec.end() != cb_iter; ++cb_iter)
             ((callback<derived>*)(*cb_iter))->_cb((const derived&) *this); // pull the trigger
     }
-/*
+
     template <typename object>
     static key add(object* Obj, void (object::*callback)(const derived& ev) )
     {
         std::string name( typeid(derived).name() );
         std::stringstream ss;
-        ss << listener_pointer;  
+        ss << Obj;  
         std::string listener_id = ss.str();
-        return get_sub_pub_man()->add( boost::bind( callback, Obj, _1), name, listener_id);
+		boost::function<void(const derived&)> cb_ = boost::bind( callback, Obj, _1);
+        return get_sub_pub_man()->add( cb_, name, listener_id);
     }
-*/
+/*
     static key add(const void* listener_pointer, boost::function<void(const derived&)> cb_)
     {
         std::string name( typeid(derived).name() );
@@ -165,11 +166,11 @@ public:
         ss << listener_pointer;  
         std::string listener_id = ss.str();
         return get_sub_pub_man()->add(cb_, name, listener_id);
-    }
+    }*/
 
 };
 
-_LIB_EXPORT_ class account_list  // held by subscriber objects
+class account_list  // held by subscriber objects
 {
 public:
     void add_account(key k);
