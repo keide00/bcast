@@ -14,7 +14,7 @@
 
 #include "bcast.hpp"
 
-struct simple_data_event : public bcast::event<simple_data_event>
+struct simple_data_event : public bcast::bevent<simple_data_event>
 {
     simple_data_event(int important_number_)
         : important_number(important_number_)
@@ -23,7 +23,7 @@ struct simple_data_event : public bcast::event<simple_data_event>
     int important_number;
 };
 
-struct string_message_event : public bcast::event<string_message_event>
+struct string_message_event : public bcast::bevent<string_message_event>
 {
     string_message_event(std::string message_)
         : message(message_)
@@ -32,7 +32,7 @@ struct string_message_event : public bcast::event<string_message_event>
     std::string message;
 };
 
-struct float_message_event : public bcast::event<float_message_event>
+struct float_message_event : public bcast::bevent<float_message_event>
 {
     float_message_event(float num_)
         : num(num_)
@@ -42,7 +42,7 @@ struct float_message_event : public bcast::event<float_message_event>
 };
 
 
-struct class_1_to_2_event : public bcast::event<class_1_to_2_event>
+struct class_1_to_2_event : public bcast::bevent<class_1_to_2_event>
 {
     class_1_to_2_event(std::string message_, int num_)
         : message(message_)
@@ -53,7 +53,7 @@ struct class_1_to_2_event : public bcast::event<class_1_to_2_event>
     std::string message;
 };
 
-struct class_2_to_1_event : public bcast::event<class_2_to_1_event>
+struct class_2_to_1_event : public bcast::bevent<class_2_to_1_event>
 {
     class_2_to_1_event(std::string message_, int num_)
         : message(message_)
