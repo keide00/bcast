@@ -155,19 +155,18 @@ public:
         std::stringstream ss;
         ss << Obj;  
         std::string listener_id = ss.str();
-		boost::function<void(const derived&)> cb_ = boost::bind( callback, Obj, _1);
+	boost::function<void(const derived&)> cb_ = boost::bind( callback, Obj, _1);
         return get_sub_pub_man()->add( cb_, name, listener_id);
     }
-/*
-    static key add(const void* listener_pointer, boost::function<void(const derived&)> cb_)
+
+    static key add(void (*callback)(const derived& ev) )
     {
         std::string name( typeid(derived).name() );
         std::stringstream ss;
-        ss << listener_pointer;  
+        ss << Obj;  
         std::string listener_id = ss.str();
-        return get_sub_pub_man()->add(cb_, name, listener_id);
-    }*/
-
+        return get_sub_pub_man()->add( callback, name, listener_id);
+    }
 };
 
 class account_list  // held by subscriber objects
