@@ -63,7 +63,8 @@ int main()
 {
     subscriber1 * sss1 = new subscriber1("S1");
 
-    // Send events from ... 
+                                        // Send events from ...
+                                        
     simple_data_event from_main(100);   // ... main
     from_main.send();
 
@@ -111,7 +112,7 @@ int main()
     talking_to_svec.send();                 // all in svec hear this
 
     // valgrind shows no memory leaks
-    //      the sub_pub_manager singleton allocation stays on the stack until `return 0`
+    //      the sub_pub_manager singleton allocation stays on the heap until 'return 0`
 
     return 0;
 }
