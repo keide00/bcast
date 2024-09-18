@@ -1,0 +1,119 @@
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Library General Public
+// License as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Library General Public License for more details.
+// Original Author: Kyle Eide, Kyle.E.Eide@gmail.com
+
+// comile with: g++ -std=c++11 simple_program_using_bcast.cpp -o simple -L./ -I./ -lbcast
+
+#include <iostream>
+#include <string>
+
+#include "bcast.hpp"
+
+#include "example_events.h"
+
+
+class subscriber1
+{
+public:
+    subscriber1(std::string name_)
+    : _name(name_)
+    {
+        _accounts.add_account( simple_data_event::add(this, &subscriber1::on_simple_data_event) );
+    }
+
+    void on_simple_data_event(const simple_data_event& ev)
+    {
+        std::cout << _name << " received simple_data_event: important_number = " << ev.important_number << std::endl;
+    }
+    
+    ~subscriber1()
+    {
+        _accounts.clear();  //! Always clear accounts before disinstantiation
+    }
+
+    bcast::account_list _accounts;
+    std::string _name;
+};
+
+class arbitrary
+{
+public:
+    void something_happened()
+    {
+        simple_data_event to_the_subscribers(55);
+        to_the_subscribers.send();
+    }
+};
+
+void event_from_function(int data)
+{
+    simple_data_event b(data);
+    b.send();
+}
+
+#include <boost/shared_ptr.hpp>
+
+int main()
+{
+    subscriber1 * sss1 = new subscriber1("S1");
+
+                                        // Send events from ...
+                                        
+    simple_data_event from_main(100);   // ... main
+    from_main.send();
+
+    std::cout << std::endl;
+
+    event_from_function(10);            // ... functions
+
+    std::cout << std::endl;
+
+    arbitrary arb;
+    arb.something_happened();           // ... other objects
+
+    std::cout << std::endl;
+
+    delete sss1;                        // subscribers can come and go
+
+    simple_data_event I_EXIST(99);
+    I_EXIST.send();                     // no one is listening ... std::cerr a warning
+
+    std::cout << std::endl;
+
+    subscriber1 * sss2 = new subscriber1("S2");
+    subscriber1 * sss3 = new subscriber1("S3");
+    
+    simple_data_event more(99);
+    more.send();                        // S2 and S3 hear this
+
+    std::cout << std::endl;
+
+    delete sss2;
+    delete sss3;
+
+    typedef boost::shared_ptr<subscriber1> s_ptr;
+    typedef std::vector<s_ptr> s_ptr_vec;   // std containers work IF put into as a pointer
+                                            // std containers copy constructor doesn't play well with the 
+                                            // object/callback identifier/address/account list
+    s_ptr_vec svec;
+
+    int s_num(0);
+    svec.push_back( s_ptr(new subscriber1("svec # " + std::to_string(++s_num)))); // compile with c++11
+    svec.push_back( s_ptr(new subscriber1("svec # " + std::to_string(++s_num)))); // or remove std::to_string
+    svec.push_back( s_ptr(new subscriber1("svec # " + std::to_string(++s_num))));
+
+    simple_data_event talking_to_svec(123);
+    talking_to_svec.send();                 // all in svec hear this
+
+    // valgrind shows no memory leaks
+    //      the sub_pub_manager singleton allocation stays on the heap until 'return 0`
+
+    return 0;
+}
